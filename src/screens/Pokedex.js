@@ -41,11 +41,12 @@ const Pokedex = (props) => {
         {pokemonAll.map((item, index) => (
           <ListItem
             key={index}
-            /*leftAvatar={{ source: { uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (index + 1) + '.png' } }}*/
-            title={"#" + (index + 1) + " " + item.name}
+            //leftAvatar={{ source: { uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png` } }}
+            title={"#" + (index + 1) + " " + item.name.charAt(0).toUpperCase() + item.name.slice(1)}
             bottomDivider
             onPress={ () => {
               navigate('PokemonDetails', {
+                pokeName: item.name,
                 pokeId: index,
               })
             }}
