@@ -10,42 +10,29 @@ const Pokemon = (props) => {
 
     const [stats, setStats] = useState([]);
     const [types, setTypes] = useState([]);
-    const [chain, setChain] = useState([]);
+    const [number, setNumber] = useState([]);
 
     const images = [
-      { key: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${(params.pokeId + 1)}.png` },
-      { key: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${(params.pokeId + 1)}.png` },
-      { key: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${(params.pokeId + 1)}.png` },
-      { key: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/${(params.pokeId + 1)}.png` }
+      { key: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${number}.png` },
+      { key: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${number}.png` },
     ]
     
     useEffect(() => {
       fetchPokemon()
-      fetchEvolution()
     },[]);
 
     const fetchPokemon = () => {
-        fetch(`https://pokeapi.co/api/v2/pokemon/${(params.pokeId + 1)}`)
+        fetch(`https://pokeapi.co/api/v2/pokemon/${params.pokeName}`)
         .then(response => response.json())
         .then(responseJson => {
             setStats(responseJson.stats);
             setTypes(responseJson.types);
+            setNumber(responseJson.id);
         })
         .catch(error => { 
             Alert.alert(error); 
         });    
       }
-
-    const fetchEvolution = () => {
-      fetch(`https://pokeapi.co/api/v2/evolution-chain/${(params.pokeId + 1)}`)
-      .then(response => response.json())
-      .then(responseJson => { 
-          setChain(responseJson.chain);
-      })
-      .catch(error => { 
-          Alert.alert(error); 
-      });    
-    }
 
     var sortBy = (fn) => {
       return function (a, b) {
@@ -60,12 +47,7 @@ const Pokemon = (props) => {
     types.sort(sortBySlot);
 
     const renderImage = ({item, index}) => {
-      while (index <= 4) {
-        console.log(item.key)
-        if (item.key != null) {
-          return (<Image style={{width: 150, height: 150}} source={{ uri: item.key }}></Image>)
-        }
-      }
+      return (<Image style={{width: 150, height: 150}} source={{ uri: item.key }}></Image>)
     };
 
     return (
@@ -107,7 +89,7 @@ const Pokemon = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 3,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-end',

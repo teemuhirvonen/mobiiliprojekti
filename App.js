@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Pokedex from './src/screens/Pokedex';
 import Pokemon from './src/screens/Pokemon';
+import GamePokedex from './src/screens/GamePokedex'
 
 const AppNavigator = createStackNavigator(
   {
@@ -13,6 +14,9 @@ const AppNavigator = createStackNavigator(
     },
     PokemonDetails: {
       screen: Pokemon
+    },
+    Game: {
+      screen: GamePokedex
     }
   },
   {
@@ -31,7 +35,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
   },
