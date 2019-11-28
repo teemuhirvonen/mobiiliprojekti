@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Picker, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ScrollView, Picker, ActivityIndicator, Button } from 'react-native';
 import { ListItem, ThemeProvider } from 'react-native-elements';
 
 const Pokedex = (props) => {
@@ -61,9 +61,9 @@ const Pokedex = (props) => {
           style={{height:30, marginTop: 20, marginBottom: 20, width: '100%'}}
           selectedValue=''
           onValueChange={(label, value) => {
-            const game = gameNames[(label - 1)];
+            const game = gameNames[(label - 2)];
             navigate('Game', {
-              game: value,
+              game: (value + 1),
               gameName: game
             })
           }}>
@@ -95,6 +95,9 @@ const Pokedex = (props) => {
             label={gameNames[7]}
             value='9'/>
         </Picker>
+        <Button title='Show saved teams' onPress={ () => {
+                navigate('Favourite')
+              }}/>
         <ThemeProvider theme={theme}>
           {pokemonAll.map((item, index) => (
             <ListItem
