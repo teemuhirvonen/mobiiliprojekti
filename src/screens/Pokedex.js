@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Picker } from 'react-native';
+import { StyleSheet, View, ScrollView, Picker, ActivityIndicator } from 'react-native';
 import { ListItem, ThemeProvider } from 'react-native-elements';
 
 const Pokedex = (props) => {
@@ -9,6 +9,18 @@ const Pokedex = (props) => {
   const { navigate } = props.navigation;
 
   const [pokemonAll, setPokemonAll] = useState([]);
+  const [isLoading, setIsLoading] = useState([]);
+
+  const gameNames = [
+    "Red, Blue, Yellow, Fire red and Leaf green Pokedex",
+    "Gold, Silver and Crystal Pokedex",
+    "Ruby, Sapphire and Emerald Pokedex",
+    "Diamond and Pearl Pokedex",
+    "Platinum Pokedex",
+    "Heart gold and Soul silver Pokedex",
+    "Black and White Pokedex",
+    "Black 2 and White 2 Pokedex",
+  ];
 
   useEffect(() => 
     fetchPokemon(),
@@ -19,6 +31,7 @@ const Pokedex = (props) => {
       .then(response => response.json())
       .then(responseJson => { 
         setPokemonAll(responseJson.pokemon_entries);
+        setIsLoading(false);
       })
       .catch(error => { 
         Alert.alert(error); 
@@ -33,44 +46,53 @@ const Pokedex = (props) => {
     }
   };
 
+  if (isLoading) {
+    //Loading View while data is loading
+    return (
+      <View style={{ flex: 1, paddingTop: 20 }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <ScrollView>
         <Picker 
           style={{height:30, marginTop: 20, marginBottom: 20, width: '100%'}}
           selectedValue=''
-          onValueChange={ (value) => {
+          onValueChange={(label, value) => {
+            const game = gameNames[(label - 1)];
             navigate('Game', {
-              game: value
+              game: value,
+              gameName: game
             })
           }}>
           <Picker.Item 
-            style={{}}
             label='Choose specific game'
             value='0'/>
           <Picker.Item 
-            label='Red, Blue, Yellow, Fire red and Leaf green Pokedex'
+            label={gameNames[0]}
             value='2'/>
           <Picker.Item 
-            label='Gold, Silver and Crystal Pokedex'
+            label={gameNames[1]}
             value='3'/>
           <Picker.Item 
-            label='Ruby, Sapphire and Emerald Pokedex'
+            label={gameNames[2]}
             value='4'/>
           <Picker.Item 
-            label='Diamond and Pearl Pokedex'
+            label={gameNames[3]}
             value='5'/>
           <Picker.Item 
-            label='Platinum Pokedex'
+            label={gameNames[4]}
             value='6'/>
           <Picker.Item 
-            label='Heart gold and Soul silver Pokedex'
+            label={gameNames[5]}
             value='7'/>
           <Picker.Item 
-            label='Black and White Pokedex'
+            label={gameNames[6]}
             value='8'/>
           <Picker.Item 
-            label='Black 2 and White 2 Pokedex'
+            label={gameNames[7]}
             value='9'/>
         </Picker>
         <ThemeProvider theme={theme}>

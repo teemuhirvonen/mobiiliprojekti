@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { ListItem, ThemeProvider } from 'react-native-elements';
+import { Button } from 'react-native-paper';
 
 const GamePokedex = (props) => {
 
@@ -9,7 +10,8 @@ const GamePokedex = (props) => {
   const { navigate } = props.navigation;
 
   const [pokemonAll, setPokemonAll] = useState([]);
-  const [dexName, setDexName] = useState('');
+  const [isLoading, setIsLoading] = useState([]);
+  let randTeam = [];
 
   useEffect(() => 
     fetchPokemon(),
@@ -20,7 +22,7 @@ const GamePokedex = (props) => {
       .then(response => response.json())
       .then(responseJson => { 
         setPokemonAll(responseJson.pokemon_entries);
-        setDexName(responseJson.descriptions[0].description);
+        setIsLoading(false);
       })
       .catch(error => { 
         Alert.alert(error); 
@@ -35,24 +37,52 @@ const GamePokedex = (props) => {
     }
   };
 
+  const getRandomInt = (max) => {
+    return (Math.floor((Math.random() * max) + 1))
+  }
+
+  const randomTeam = () => {
+    for(i = 0; i < 6; i++) {
+      randTeam.push(getRandomInt(Object.keys(pokemonAll).length));
+    }
+    console.log(randTeam);
+    navigate('RandomTeam', { game: randTeam });
+  }
+
+
+  if (isLoading) {
+    //Loading View while data is loading
+    return (
+      <View style={{ flex: 1, paddingTop: 20 }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
         <ScrollView>
-        <Text style={{fontSize: 20, fontWeight: 'bold', marginLeft: 12}}>{dexName}</Text>
-        <ThemeProvider theme={theme}>
-          {pokemonAll.map((item, index) => (
-            <ListItem
-              key={index}
-              title={`#${item.entry_number} ${item.pokemon_species.name.charAt(0).toUpperCase() + item.pokemon_species.name.slice(1)}`}
-              bottomDivider
-              onPress={ () => {
-                navigate('PokemonDetails', {
-                  pokeName: item.pokemon_species.name
-                })
-              }}
-            />
-          ))}
-        </ThemeProvider>
+          <View>
+            <Text style={{fontSize: 20, fontWeight: 'bold', alignSelf: 'center'}}>{params.gameName}</Text>
+            <Button style={{width: '70%', alignSelf: 'center'}} mode='contained' onPress={randomTeam}>
+              Generate random team
+            </Button>
+          </View>
+          <View>
+            <ThemeProvider theme={theme}>
+              {pokemonAll.map((item, index) => (
+                <ListItem
+                  key={index}
+                  title={`#${item.entry_number} ${item.pokemon_species.name.charAt(0).toUpperCase() + item.pokemon_species.name.slice(1)}`}
+                  bottomDivider
+                  onPress={ () => {
+                    navigate('PokemonDetails', {
+                      pokeName: item.pokemon_species.name
+                    })
+                  }}
+                />
+              ))}
+            </ThemeProvider>
+          </View>
         </ScrollView> 
     </View>
   );
