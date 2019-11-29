@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text, ActivityIndicator } from 'react-native';
-import { ListItem, ThemeProvider, Overlay, Button } from 'react-native-elements';
-import Firebase from '../components/Firebase';
+import { StyleSheet, View, ScrollView, Text, ActivityIndicator, } from 'react-native';
+import { ListItem, Button, Icon } from 'react-native-elements';
+import Modal from 'react-native-modal';
 import Constants from 'expo-constants';
 
+import Firebase from '../components/Firebase';
 import Separator from '../components/Separator'
 
 const GamePokedex = (props) => {
@@ -16,7 +17,7 @@ const GamePokedex = (props) => {
 
   const [pokemonAll, setPokemonAll] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [randTeam, setRandTeam] = useState([]);
 
   useEffect(() => 
@@ -49,14 +50,6 @@ const GamePokedex = (props) => {
     );
   }
 
-  const theme = {
-    ListItem: {
-      containerStyle: {
-        width: 450,
-      }
-    }
-  };
-
   const getRandomInt = (max) => {
     return (Math.floor((Math.random() * max) + 1))
   }
@@ -70,7 +63,7 @@ const GamePokedex = (props) => {
       arr.push(pokemon);
     };
     setRandTeam(arr);
-    setVisible(true);
+    setIsVisible(true);
   }
 
   if (isLoading) {
@@ -91,7 +84,6 @@ const GamePokedex = (props) => {
           </View>
           <Separator/>
           <View>
-            <ThemeProvider theme={theme}>
               {pokemonAll.map((item, index) => (
                 <ListItem
                   key={index}
@@ -102,31 +94,48 @@ const GamePokedex = (props) => {
                       pokeName: item.pokemon_species.name
                     })
                   }}
+                  rightIcon={() => {
+                    return(
+                    <Icon
+                        name='chevron-right'
+                        type='feather'
+                        color='#517fa4'
+                    />    
+                    );
+                }}
                 />
               ))}
-            </ThemeProvider>
           </View>
         </ScrollView> 
-        <Overlay containerStyle={{alignContent: 'center'}} isVisible={visible}>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>Your randomly generated team: </Text>
-            <Text style={styles.text}>{randTeam[0]}</Text>
-            <Text style={styles.text}>{randTeam[1]}</Text>
-            <Text style={styles.text}>{randTeam[2]}</Text>
-            <Text style={styles.text}>{randTeam[3]}</Text>
-            <Text style={styles.text}>{randTeam[4]}</Text>
-            <Text style={styles.text}>{randTeam[5]}</Text>
+        <Modal
+          animationIn='fadeInUp'
+          animationOut="fadeInDown"
+          transparent={false}
+          isVisible={isVisible}
+          onBackdropPress={() => setIsVisible(false)}
+          style={{ backgroundColor: 'white', marginVertical: 250, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <View style={{flex: 1, marginVertical: "7%"}}>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>Your randomly generated team: </Text>
+              <Text style={styles.text}>{randTeam[0]}</Text>
+              <Text style={styles.text}>{randTeam[1]}</Text>
+              <Text style={styles.text}>{randTeam[2]}</Text>
+              <Text style={styles.text}>{randTeam[3]}</Text>
+              <Text style={styles.text}>{randTeam[4]}</Text>
+              <Text style={styles.text}>{randTeam[5]}</Text>
+            </View>
+            <Separator/>
+            <View style={styles.buttonStyle}>
+              <Button buttonStyle={{width: 100}} title="Save" 
+              onPress={() => {
+                saveItem();
+                setIsVisible(false)
+                }}/>
+              <Button buttonStyle={{width: 100}} title="Close" onPress={() => setIsVisible(false)}/>
+            </View>
           </View>
-          <Separator/>
-          <View style={styles.buttonStyle}>
-            <Button buttonStyle={{width: '90%'}} title="Save" 
-            onPress={() => {
-              saveItem();
-              setVisible(false)
-              }}/>
-            <Button buttonStyle={{width: '90%'}} title="Close" onPress={() => setVisible(false)}/>
-          </View>
-        </Overlay>
+        </Modal>
     </View>
   );
 }
@@ -143,8 +152,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
     marginTop: 5,
-    marginHorizontal: 10
   },
   text: {
     textAlign: 'center',

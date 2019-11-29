@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Firebase from '../components/Firebase';
-import { ListItem, Icon } from 'react-native-elements';
+import { ListItem, Icon, Button } from 'react-native-elements';
 import Constants from 'expo-constants';
+import Modal from 'react-native-modal';
 
+import Firebase from '../components/Firebase';
+import Separator from '../components/Separator';
 
-const SavedTeams = () => {
+const SavedTeams = (props) => {
 
     navigationOptions = {title: 'SavedTeams'};
 
+    const { navigate } = props.navigation;
+
     const [id, setId] = useState([]);
     const [teams, setTeams] = useState([]);
+    const [isVisible, setIsVisible] = useState(false);
+    const [pokemonTeam, setPokemonTeam] = useState([]);
+    const arr = [];
 
     useEffect(() => {
         Firebase.database().ref('teams/').on('value', snapshot => {
@@ -28,6 +35,16 @@ const SavedTeams = () => {
         Firebase.database().ref('teams/' + id[index]).remove();
         }
     
+    const showModal = (team) => {
+        for(i = 1; i < 7; i++) {
+            const getPokemon = Object.values(team)[i];
+            const pokemon = getPokemon;
+            arr.push(pokemon);
+        };
+        setPokemonTeam(arr);
+        setIsVisible(true);
+    }    
+
     return (
         <View style={styles.container}>
             
@@ -64,6 +81,7 @@ const SavedTeams = () => {
                             );
                         }
                         }
+                        onLongPress={() => showModal(item)}
                         rightIcon={() => {
                             return(
                             <Icon
@@ -79,6 +97,46 @@ const SavedTeams = () => {
                     </ListItem>
                 )) 
                 }
+            <Modal
+            animationIn='fadeInUp'
+            animationOut="fadeInDown"
+            transparent={false}
+            isVisible={isVisible}
+            onBackdropPress={() => setIsVisible(false)}
+            style={{ backgroundColor: 'white', marginVertical: 100, justifyContent: 'center', alignItems: 'center' }}
+        >
+            <View style={{flex: 1, marginVertical: "7%"}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Show pokemon info</Text>
+                <Separator/>
+                <View style={{marginBottom: 5, width: 200}}>
+                    {pokemonTeam.map((item, index) => (
+                        <ListItem
+                        key={index}
+                        title={item.charAt(0).toUpperCase() + item.slice(1)}
+                        rightIcon={() => {
+                            return(
+                            <Icon
+                                name='chevron-right'
+                                type='feather'
+                                color='#517fa4'
+                            />    
+                            );
+                        }}
+                        onPress={ () => {
+                            setIsVisible(false)
+                            navigate('PokemonDetails', {
+                              pokeName: item
+                            })
+                          }}
+                        bottomDivider>
+                    </ListItem>
+                    ))}
+                </View>
+                <View >
+                    <Button title="Close" onPress={() => setIsVisible(false)}/>
+                </View>
+            </View>
+        </Modal>
             </View>
         </View>
     );
