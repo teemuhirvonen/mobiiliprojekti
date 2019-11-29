@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Firebase from '../components/Firebase';
-import { ListItem } from 'react-native-elements';
+import { ListItem, Icon } from 'react-native-elements';
+import Constants from 'expo-constants';
 
 
 const SavedTeams = () => {
@@ -26,20 +27,56 @@ const SavedTeams = () => {
     const deleteItem = (index) => {
         Firebase.database().ref('teams/' + id[index]).remove();
         }
-
+    
     return (
         <View style={styles.container}>
-            <Text style={{fontSize: 20, textAlign: "center"}}>Saved pokemon teams</Text>
+            
             <View style={styles.listContainer}>
                 {
                 teams.map((item, index) => (
                     <ListItem
                         key={index}
-                        title={item.gameName}
-                        subtitle={`${item.pokemon1}\n${item.pokemon2}\n${item.pokemon3}\n${item.pokemon4}\n${item.pokemon5}\n${item.pokemon6}`}
-                        onLongPress={() => deleteItem(index)}
+                        title={() => {
+                            return <Text style={{fontWeight: 'bold'}}>{item.gameName.slice(0,-8)}</Text>;
+                            }}
+                        subtitle={() => {
+                            return(
+                            <View>
+                                <Text>
+                                    {item.pokemon1.charAt(0).toUpperCase() + item.pokemon1.slice(1)}
+                                </Text>
+                                <Text>
+                                    {item.pokemon2.charAt(0).toUpperCase() + item.pokemon2.slice(1)}
+                                </Text>
+                                <Text>
+                                    {item.pokemon3.charAt(0).toUpperCase() + item.pokemon3.slice(1)}
+                                </Text>
+                                <Text>
+                                    {item.pokemon4.charAt(0).toUpperCase() + item.pokemon4.slice(1)}
+                                </Text>
+                                <Text>
+                                    {item.pokemon5.charAt(0).toUpperCase() + item.pokemon5.slice(1)}
+                                </Text>
+                                <Text>
+                                    {item.pokemon6.charAt(0).toUpperCase() + item.pokemon6.slice(1)}
+                                </Text>
+                            </View>
+                            );
+                        }
+                        }
+                        rightIcon={() => {
+                            return(
+                            <Icon
+                                name='trash-2'
+                                type='feather'
+                                color='#517fa4'
+                                onPress={() => deleteItem(index)}
+                            />    
+                            );
+                        }}
                         bottomDivider
-                    />
+                    >
+                    </ListItem>
                 )) 
                 }
             </View>
@@ -47,16 +84,16 @@ const SavedTeams = () => {
     );
 }
 
-SavedTeams.navigationOptions = ({navigate}) => ({title: 'Saved teams'})
+SavedTeams.navigationOptions = ({navigate}) => ({title: 'Saved pokemon teams'})
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    marginTop: Constants.statusBarHeight,
+    marginHorizontal: 16,
    },
    listContainer: {
-     flex: 2
+     flex: 3,
    }
 });
 

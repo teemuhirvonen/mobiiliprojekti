@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text, ActivityIndicator, Button } from 'react-native';
-import { ListItem, ThemeProvider, Overlay } from 'react-native-elements';
+import { StyleSheet, View, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { ListItem, ThemeProvider, Overlay, Button } from 'react-native-elements';
 import Firebase from '../components/Firebase';
+import Constants from 'expo-constants';
+
+import Separator from '../components/Separator'
 
 const GamePokedex = (props) => {
 
@@ -67,7 +70,6 @@ const GamePokedex = (props) => {
       arr.push(pokemon);
     };
     setRandTeam(arr);
-    console.log(randTeam)
     setVisible(true);
   }
 
@@ -82,10 +84,12 @@ const GamePokedex = (props) => {
   return (
     <View style={styles.container}>
         <ScrollView>
-          <View style={{alignSelf: 'center'}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>{params.gameName}</Text>
-            <Button style={{width: 150}} title='Generate random team' onPress={randomTeam}/>
+          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{params.gameName}</Text>
+          <Separator/>
+          <View>
+            <Button buttonStyle={{height: 50}} title='Generate random team' onPress={randomTeam}/>
           </View>
+          <Separator/>
           <View>
             <ThemeProvider theme={theme}>
               {pokemonAll.map((item, index) => (
@@ -103,46 +107,48 @@ const GamePokedex = (props) => {
             </ThemeProvider>
           </View>
         </ScrollView> 
-        <Overlay
-          style={{height: 400}}
-          isVisible={visible}>
-          <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>Your randomly generated team: </Text>
-          <Text style={{textAlign: 'center', fontSize: 20}}>{randTeam[0]}</Text>
-          <Text style={{textAlign: 'center', fontSize: 20}}>{randTeam[1]}</Text>
-          <Text style={{textAlign: 'center', fontSize: 20}}>{randTeam[2]}</Text>
-          <Text style={{textAlign: 'center', fontSize: 20}}>{randTeam[3]}</Text>
-          <Text style={{textAlign: 'center', fontSize: 20}}>{randTeam[4]}</Text>
-          <Text style={{textAlign: 'center', fontSize: 20}}>{randTeam[5]}</Text>
+        <Overlay containerStyle={{alignContent: 'center'}} isVisible={visible}>
+          <View style={{marginBottom: 5}}>
+            <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>Your randomly generated team: </Text>
+            <Text style={styles.text}>{randTeam[0]}</Text>
+            <Text style={styles.text}>{randTeam[1]}</Text>
+            <Text style={styles.text}>{randTeam[2]}</Text>
+            <Text style={styles.text}>{randTeam[3]}</Text>
+            <Text style={styles.text}>{randTeam[4]}</Text>
+            <Text style={styles.text}>{randTeam[5]}</Text>
+          </View>
+          <Separator/>
           <View style={styles.buttonStyle}>
-            <Button style={{marginRight: 5}} title="Save" onPress={() => {
+            <Button buttonStyle={{width: '90%'}} title="Save" 
+            onPress={() => {
               saveItem();
               setVisible(false)
               }}/>
-            <Button style={{marginLeft: 5}}title="Close" onPress={() => setVisible(false)}/>
+            <Button buttonStyle={{width: '90%'}} title="Close" onPress={() => setVisible(false)}/>
           </View>
         </Overlay>
     </View>
   );
 }
 
-GamePokedex.navigationOptions = ({navigate}) => ({title: 'Game'})
+GamePokedex.navigationOptions = ({navigate}) => ({title: 'Game specific pokedex'})
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    marginTop: Constants.statusBarHeight,
+    marginHorizontal: 16,
   },
   buttonStyle: {
     flex: 1,
-    width: 200,
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    alignItems: 'flex-start',
-    alignSelf: 'center',
     justifyContent: 'space-around',
-    padding: 20,
+    marginTop: 5,
+    marginHorizontal: 10
+  },
+  text: {
+    textAlign: 'center',
+    fontSize: 20
   }
 });
 
