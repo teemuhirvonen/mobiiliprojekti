@@ -50,7 +50,6 @@ const Pokedex = (props) => {
   };
 
   if (isLoading) {
-    //Loading View while data is loading
     return (
       <View style={{ flex: 1, paddingTop: 20 }}>
         <ActivityIndicator />
