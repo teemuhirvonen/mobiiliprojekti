@@ -103,12 +103,12 @@ const SavedTeams = (props) => {
             transparent={false}
             isVisible={isVisible}
             onBackdropPress={() => setIsVisible(false)}
-            style={{ backgroundColor: 'white', marginVertical: 100, justifyContent: 'center', alignItems: 'center' }}
+            style={{ backgroundColor: 'white', marginVertical: 160, justifyContent: 'center', alignItems: 'center' }}
         >
             <View style={{flex: 1, marginVertical: "7%"}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Show pokemon info</Text>
                 <Separator/>
-                <View style={{marginBottom: 5, width: 200}}>
+                <View style={{marginBottom: 10, width: 350}}>
                     {pokemonTeam.map((item, index) => (
                         <ListItem
                         key={index}

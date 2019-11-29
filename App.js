@@ -5,8 +5,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Pokedex from './src/screens/Pokedex';
 import Pokemon from './src/screens/Pokemon';
-import GamePokedex from './src/screens/GamePokedex'
-import SavedTeams from './src/screens/SavedTeams'
+import GamePokedex from './src/screens/GamePokedex';
+import SavedTeams from './src/screens/SavedTeams';
 
 const AppNavigator = createStackNavigator(
   {
